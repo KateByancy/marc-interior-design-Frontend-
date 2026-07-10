@@ -1,71 +1,210 @@
-// src/components/Landing.tsx
+﻿// src/components/Landing.tsx
 "use client";
-import React from 'react';
-import { ShieldCheck, Grid, Calendar, MessageSquare } from 'lucide-react';
+import React, { useState } from 'react';
+import { Home, LayoutGrid, Calendar, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface LandingProps {
   onNavigate: (route: string) => void;
 }
 
 export default function Landing({ onNavigate }: LandingProps) {
+  // Gallery Slider State Data
+  const galleryImages = [
+    "/placeholder-interior-1.jpg", 
+    "/placeholder-interior-2.jpg"
+  ];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
+
   return (
-    <div className="w-full max-w-md mx-auto min-h-[844px] bg-gradient-to-b from-[#005c9e] to-[#0a192f] text-white flex flex-col justify-between overflow-y-auto pb-8 animate-fadeIn">
+    <div className="w-full min-h-screen bg-gradient-to-b from-[#005c9e] via-[#004b84] to-[#0a192f] text-white font-sans flex justify-center">
       
-      {/* Top Hero Showcase Banner Image Section */}
-      <div className="relative h-60 w-full bg-slate-800 flex flex-col justify-center items-center text-center p-6 bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=600&q=80')` }}>
-        <div className="absolute inset-0 bg-[#004b84]/70 backdrop-blur-[1px]" />
-        <div className="relative z-10 space-y-2">
-          <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl mx-auto flex items-center justify-center border border-white/20 shadow-xl">
-            <span className="text-2xl font-serif font-black tracking-wider text-white">M</span>
+      {/* MASTER RESPONSIVE CONTAINER */}
+      <div className="w-full max-w-md md:max-w-4xl bg-gradient-to-b from-[#0070c0] to-[#051329] min-h-screen flex flex-col justify-between shadow-2xl relative overflow-x-hidden">
+        
+        <div>
+          {/* 1. TOP HERO AREA WITH BACKGROUND IMAGE OVERLAY */}
+          <div 
+            className="w-full h-56 bg-cover bg-center relative flex flex-col items-center justify-between p-4"
+            style={{ 
+              backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,112,192,1)), url('/your-carrier-background.jpg')`
+            }}
+          >
+            <div className="bg-[#0056b3] px-6 py-2 rounded-full border border-blue-400/30 shadow-md mt-2">
+              <span className="text-sm font-serif italic tracking-widest font-black text-white">Carrier</span>
+            </div>
+
+            <p className="text-[11px] uppercase tracking-widest font-bold text-blue-100 text-center -mt-4">
+              The Air Authority Center
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 w-full max-w-xs pb-2">
+              <button className="bg-[#0056b3] hover:bg-[#004494] text-white text-[10px] font-bold tracking-widest py-2 rounded-lg border border-blue-400/20 shadow transition uppercase">
+                Consult
+              </button>
+              <button className="bg-white hover:bg-slate-100 text-slate-800 text-[10px] font-bold tracking-widest py-2 rounded-lg shadow transition uppercase">
+                Gallery
+              </button>
+            </div>
           </div>
-          <h1 className="text-xl font-serif tracking-widest font-bold">CARRIER</h1>
-          <p className="text-[10px] uppercase tracking-widest text-blue-200">The Fine Authority Service</p>
+
+          {/* 2. THE MARC SIGNATURE INTRO */}
+          <div className="px-6 py-8 text-center space-y-4 flex flex-col items-center">
+            <div className="w-12 h-12 bg-white text-[#0070c0] rounded-full flex items-center justify-center shadow-lg">
+              <Home className="w-5 h-5 stroke-[2]" />
+            </div>
+            
+            <div className="space-y-2">
+              <h2 className="text-base font-serif italic font-bold tracking-wide text-white">
+                The Marc Signature
+              </h2>
+              <p className="text-[11px] text-blue-100/80 leading-relaxed font-light max-w-xs mx-auto">
+                Where binary precision meets artistic intuition. We believe every corner should tell a story of intentionality, balance, and quiet luxury.
+              </p>
+            </div>
+          </div>
+
+          {/* 3. CURATED WORKS / VISUAL GALLERY SLIDER */}
+          <div className="px-6 py-2 space-y-3">
+            <div className="space-y-0.5">
+              <p className="text-[9px] tracking-widest font-black text-blue-300 uppercase">Curated Works</p>
+              <h3 className="text-lg font-serif font-bold text-white tracking-wide">Visual</h3>
+            </div>
+
+            <div className="relative w-full h-44 bg-slate-800 rounded-2xl overflow-hidden shadow-xl border border-white/10 group">
+              <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 to-slate-800 flex items-center justify-center text-xs text-slate-500 font-serif">
+                [ Interior Showcase View Window ]
+              </div>
+              
+              <div className="absolute bottom-3 right-3 flex space-x-1.5 z-20">
+                <button 
+                  onClick={prevSlide}
+                  className="p-1 bg-white hover:bg-slate-100 text-slate-800 rounded-md transition shadow-md flex items-center justify-center"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5 stroke-[3]" />
+                </button>
+                <button 
+                  onClick={nextSlide}
+                  className="p-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition shadow-md flex items-center justify-center"
+                >
+                  <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
+                </button>
+              </div>
+            </div>
+
+            <p className="text-center text-[9px] tracking-widest font-black text-blue-200/70 uppercase pt-1">
+              Service Excellence
+            </p>
+          </div>
+
+          {/* 4. SERVICE MATRIX GRID */}
+          <div className="px-6 py-4 grid grid-cols-2 gap-4">
+            <div className="bg-white/95 rounded-2xl p-4 flex flex-col items-center justify-center text-center space-y-2 shadow-md group hover:bg-white transition cursor-pointer">
+              <div className="p-2 bg-blue-50 text-[#0070c0] rounded-xl border border-blue-100">
+                <Home className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-[9px] font-black tracking-widest text-slate-700 uppercase">Residential</span>
+            </div>
+
+            <div className="bg-white/95 rounded-2xl p-4 flex flex-col items-center justify-center text-center space-y-2 shadow-md group hover:bg-white transition cursor-pointer">
+              <div className="p-2 bg-blue-50 text-[#0070c0] rounded-xl border border-blue-100">
+                <LayoutGrid className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-[9px] font-black tracking-widest text-slate-700 uppercase">Commercial</span>
+            </div>
+
+            <div 
+              onClick={() => onNavigate('book')} 
+              className="bg-white/95 rounded-2xl p-4 flex flex-col items-center justify-center text-center space-y-2 shadow-md group hover:bg-white transition cursor-pointer"
+            >
+              <div className="p-2 bg-blue-50 text-[#0070c0] rounded-xl border border-blue-100">
+                <Calendar className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-[9px] font-black tracking-widest text-slate-700 uppercase">Book</span>
+            </div>
+
+            <div 
+              onClick={() => onNavigate('chat')} 
+              className="bg-white/95 rounded-2xl p-4 flex flex-col items-center justify-center text-center space-y-2 shadow-md group hover:bg-white transition cursor-pointer"
+            >
+              <div className="p-2 bg-blue-50 text-[#0070c0] rounded-xl border border-blue-100">
+                <MessageSquare className="w-5 h-5 stroke-[2]" />
+              </div>
+              <span className="text-[9px] font-black tracking-widest text-slate-700 uppercase">Contact</span>
+            </div>
+          </div>
+
+          {/* 5. FOOTER WORKSPACE TRIGGER BUTTON */}
+          <div className="px-6 py-4">
+            <button 
+              onClick={() => onNavigate('login')}
+              className="w-full bg-[#101935] hover:bg-[#162249] text-blue-300 font-serif font-black tracking-widest text-xs py-4 rounded-2xl border border-blue-900/40 transition shadow-xl uppercase flex flex-col items-center space-y-0.5 justify-center"
+            >
+              <span className="text-white tracking-widest text-[11px]">READY TO BEGIN?</span>
+              <span className="text-[9px] text-blue-400 font-sans font-bold uppercase">Launch Client Workspace</span>
+            </button>
+          </div>
         </div>
+
+        {/* 6. SOCIAL MEDIAS AND SYSTEM COPYRIGHTS - FIXED WITH BULLETPROOF SVGS */}
+        <div className="w-full p-6 text-center space-y-4 border-t border-blue-900/20 bg-[#051021]/30">
+          
+          <div className="flex justify-center items-center space-x-6 text-blue-200/70">
+            {/* Instagram Inline SVG */}
+            <a 
+              href="https://instagram.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:text-white transition flex items-center justify-center"
+              aria-label="Instagram"
+            >
+              <svg className="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+            
+            {/* Twitter / X Inline SVG */}
+            <a 
+              href="https://x.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:text-white transition flex items-center justify-center"
+              aria-label="Twitter / X"
+            >
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+            
+            {/* Facebook Inline SVG */}
+            <a 
+              href="https://facebook.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:text-white transition flex items-center justify-center"
+              aria-label="Facebook"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              </svg>
+            </a>
+          </div>
+
+          <p className="text-[8px] tracking-[0.15em] text-blue-200/40 uppercase font-semibold">
+            © 2026 MARC CUSTOM DESIGNS - EST 2013
+          </p>
+        </div>
+
       </div>
-
-      {/* Corporate Copy Block */}
-      <div className="px-6 py-4 text-center space-y-2">
-        <h2 className="text-sm font-serif tracking-wide font-semibold text-blue-100">The Marc Signature</h2>
-        <p className="text-xs text-slate-300 font-light leading-relaxed">
-          Where binary precision meets artistic intuition. We believe every corner should tell a story of intentionality, balance, and quiet luxury.
-        </p>
-      </div>
-
-      {/* Grid Action Panel Layout Blocks */}
-      <div className="px-6 grid grid-cols-2 gap-3">
-        <button onClick={() => onNavigate('home')} className="bg-white/95 text-slate-800 p-4 rounded-xl flex flex-col items-center text-center shadow-md hover:bg-white transition">
-          <ShieldCheck className="w-6 h-6 text-[#0070c0] mb-2" />
-          <span className="text-[10px] font-black tracking-wider uppercase">Residential</span>
-        </button>
-
-        <button onClick={() => onNavigate('work')} className="bg-white/95 text-slate-800 p-4 rounded-xl flex flex-col items-center text-center shadow-md hover:bg-white transition">
-          <Grid className="w-6 h-6 text-[#0070c0] mb-2" />
-          <span className="text-[10px] font-black tracking-wider uppercase">Commercial</span>
-        </button>
-
-        <button onClick={() => onNavigate('book')} className="bg-white/95 text-slate-800 p-4 rounded-xl flex flex-col items-center text-center shadow-md hover:bg-white transition">
-          <Calendar className="w-6 h-6 text-[#0070c0] mb-2" />
-          <span className="text-[10px] font-black tracking-wider uppercase">Book Now</span>
-        </button>
-
-        <button onClick={() => onNavigate('chat')} className="bg-white/95 text-slate-800 p-4 rounded-xl flex flex-col items-center text-center shadow-md hover:bg-white transition">
-          <MessageSquare className="w-6 h-6 text-[#0070c0] mb-2" />
-          <span className="text-[10px] font-black tracking-wider uppercase">Support</span>
-        </button>
-      </div>
-
-      {/* Core Trigger CTA */}
-      <div className="px-6 pt-4">
-        <button onClick={() => onNavigate('login')} className="w-full bg-[#111c3a] border border-blue-900/50 text-white font-bold text-xs tracking-widest py-3.5 rounded-xl shadow-lg transition hover:bg-[#16254e]">
-          READY TO BEGIN?
-        </button>
-      </div>
-
-      {/* Footer Branded Links */}
-      <div className="text-center pt-4 border-t border-white/5 mx-6">
-        <p className="text-[9px] text-slate-400 tracking-wider">© 2026 MARC CUSTOM DESIGNS - EST 2013</p>
-      </div>
-
     </div>
   );
 }

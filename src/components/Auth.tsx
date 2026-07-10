@@ -1,7 +1,7 @@
 // src/components/Auth.tsx
 "use client";
 import React, { useState } from 'react';
-import { Home, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 interface AuthProps {
   onAuthSuccess: () => void;
@@ -9,86 +9,120 @@ interface AuthProps {
 }
 
 export default function Auth({ onAuthSuccess, onBackToLanding }: AuthProps) {
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-[844px] bg-gradient-to-b from-[#005c9e] to-[#0a192f] text-white px-6 pt-10 pb-6 flex flex-col justify-between overflow-y-auto animate-fadeIn relative">
+    <div className="w-full min-h-screen bg-gradient-to-br from-[#0a1128] to-[#0070c0] flex items-center justify-center p-0 md:p-6">
       
-      {/* Return Context Arrow Button */}
-      <button onClick={onBackToLanding} className="absolute top-8 left-4 p-2 bg-white/10 rounded-xl hover:bg-white/20 transition">
-        <ArrowLeft className="w-4 h-4" />
-      </button>
-
-      <div className="space-y-6 pt-4">
-        {/* Core Branded Header Shield Block */}
-        <div className="text-center space-y-2">
-          <div className="w-14 h-14 bg-[#111c3a] rounded-xl mx-auto flex items-center justify-center shadow-xl border border-blue-500/20">
-            <Home className="w-6 h-6 text-blue-400" />
-          </div>
-          <h2 className="text-xl font-serif font-bold tracking-wide">
-            {isRegister ? 'Register Now' : 'MARC'}
-          </h2>
-          <p className="text-[10px] tracking-widest uppercase text-blue-200">
-            {isRegister ? 'Complete Your Profile' : 'Custom Interior Design'}
-          </p>
-        </div>
-
-        {/* Dynamic Form Setup View */}
-        <form onSubmit={(e) => { e.preventDefault(); onAuthSuccess(); }} className="space-y-3.5">
-          {isRegister && (
-            <>
-              <div>
-                <label className="text-[9px] tracking-widest font-black text-blue-200 block mb-1 uppercase">Full Name</label>
-                <input required type="text" placeholder="John Doe Brown" className="w-full bg-white text-slate-800 rounded-xl px-4 py-2.5 text-xs shadow-inner focus:outline-none" />
-              </div>
-              <div>
-                <label className="text-[9px] tracking-widest font-black text-blue-200 block mb-1 uppercase">Phone Number</label>
-                <input required type="tel" placeholder="0917 000 0000" className="w-full bg-white text-slate-800 rounded-xl px-4 py-2.5 text-xs shadow-inner focus:outline-none" />
-              </div>
-              <div>
-                <label className="text-[9px] tracking-widest font-black text-blue-200 block mb-1 uppercase">Project Address</label>
-                <input required type="text" placeholder="Barangay, City" className="w-full bg-white text-slate-800 rounded-xl px-4 py-2.5 text-xs shadow-inner focus:outline-none" />
-              </div>
-            </>
-          )}
-
-          <div>
-            <label className="text-[9px] tracking-widest font-black text-blue-200 block mb-1 uppercase">Email Address</label>
-            <input required type="email" placeholder="johndoe@example.com" className="w-full bg-white text-slate-800 rounded-xl px-4 py-2.5 text-xs shadow-inner focus:outline-none" />
-          </div>
-
-          <div>
-            <label className="text-[9px] tracking-widest font-black text-blue-200 block mb-1 uppercase">Password</label>
-            <input required type="password" placeholder="••••••••" className="w-full bg-white text-slate-800 rounded-xl px-4 py-2.5 text-xs shadow-inner focus:outline-none" />
-          </div>
-
-          <button type="submit" className="w-full bg-[#111c3a] text-white text-xs font-bold tracking-widest py-3 rounded-xl transition hover:bg-[#16254e] mt-4 shadow-md">
-            {isRegister ? 'REGISTER NOW' : 'SIGN IN'}
+      {/* DESKTOP MATRIX CONTAINER CARD */}
+      <div className="w-full max-w-5xl min-h-[600px] bg-white md:rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        {/* LEFT COLUMN PANEL: Brand presentation showcase (Hidden on small mobile viewports) */}
+        <div className="hidden md:flex bg-gradient-to-b from-[#0070c0] to-[#111c3a] p-12 flex-col justify-between text-white relative">
+          <button 
+            onClick={onBackToLanding}
+            className="absolute top-6 left-6 flex items-center space-x-2 text-xs font-bold tracking-widest text-blue-200 hover:text-white transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>RETURN TO SITE</span>
           </button>
-        </form>
 
-        {/* Third Party Auth Splitting Divider line */}
-        <div className="relative flex py-2 items-center">
-          <div className="flex-grow border-t border-white/10"></div>
-          <span className="flex-shrink mx-3 text-[9px] font-bold text-slate-400 tracking-wider uppercase">Or Continue With</span>
-          <div className="flex-grow border-t border-white/10"></div>
+          <div className="mt-16 space-y-4">
+            <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center font-serif text-xl font-black border border-white/20">
+              M
+            </div>
+            <h2 className="text-3xl font-serif font-black tracking-wide leading-tight">
+              Marc Custom <br/>Interior Design System
+            </h2>
+            <p className="text-xs text-blue-100/70 max-w-sm leading-relaxed">
+              Access your real-time estimation pipelines, project timeline tracks, and premium structural material selectors.
+            </p>
+          </div>
+
+          <p className="text-[10px] text-blue-300 tracking-wider">© 2026 MARC CUSTOM SYSTEM ARCHITECTURE</p>
         </div>
 
-        {/* Google Mock Auth Target Trigger */}
-        <button onClick={onAuthSuccess} className="w-full bg-white text-slate-700 text-xs font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 border border-slate-200 shadow-sm hover:bg-slate-50 transition">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://docs.idverify.net/assets/google-icon.svg" alt="Google" className="w-3.5 h-3.5" onError={(e)=>{e.currentTarget.src="https://www.google.com/favicon.ico"}} />
-          <span>Continue with Google</span>
-        </button>
-      </div>
+        {/* RIGHT COLUMN PANEL: Dynamic Form Interface Engine */}
+        <div className="p-8 md:p-12 flex flex-col justify-center bg-white relative">
+          {/* Mobile Back Trigger Button */}
+          <button onClick={onBackToLanding} className="md:hidden absolute top-6 left-6 text-slate-400 hover:text-slate-900 transition">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
 
-      {/* Context Action Switcher Link */}
-      <div className="text-center pt-6">
-        <button onClick={() => setIsRegister(!isRegister)} className="text-[10px] font-bold tracking-wider text-blue-300 hover:underline uppercase">
-          {isRegister ? 'Already a member? Log In' : 'New Client? Create an Account'}
-        </button>
-      </div>
+          {!isRegisterMode ? (
+            /* --- LOGIN FORM SUB-VIEW --- */
+            <div className="space-y-6 animate-fadeIn">
+              <div className="text-center md:text-left">
+                <h3 className="text-xl font-serif font-black text-slate-800 tracking-wide">Welcome Back</h3>
+                <p className="text-xs text-slate-400 mt-1">Please enter your credentials to log in.</p>
+              </div>
 
+              <form onSubmit={(e) => { e.preventDefault(); onAuthSuccess(); }} className="space-y-4">
+                <div>
+                  <label className="text-[9px] tracking-widest font-black text-slate-400 block mb-1 uppercase">Email Address</label>
+                  <input type="email" placeholder="john@example.com" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-blue-500 text-slate-800" />
+                </div>
+                <div>
+                  <label className="text-[9px] tracking-widest font-black text-slate-400 block mb-1 uppercase">Password</label>
+                  <input type="password" placeholder="••••••••" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-blue-500 text-slate-800" />
+                </div>
+
+                <button type="submit" className="w-full bg-[#111c3a] text-white text-xs font-bold tracking-widest py-3.5 rounded-xl shadow-md transition hover:bg-[#1c2d5e]">
+                  SIGN IN
+                </button>
+              </form>
+
+              <div className="text-center pt-4 border-t border-slate-100">
+                <button onClick={() => setIsRegisterMode(true)} className="text-[11px] text-blue-600 font-bold hover:underline tracking-wide">
+                  NEW CLIENT? CREATE AN ACCOUNT
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* --- REGISTER FORM SUB-VIEW --- */
+            <div className="space-y-5 animate-fadeIn">
+              <div className="text-center md:text-left">
+                <h3 className="text-xl font-serif font-black text-slate-800 tracking-wide">Register Now</h3>
+                <p className="text-xs text-slate-400 mt-1">Complete your profile pipeline system setup.</p>
+              </div>
+
+              <form onSubmit={(e) => { e.preventDefault(); onAuthSuccess(); }} className="space-y-3">
+                <div>
+                  <label className="text-[9px] tracking-widest font-black text-slate-400 block mb-1 uppercase">Full Name</label>
+                  <input type="text" placeholder="John Doe Brown" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500 text-slate-800" />
+                </div>
+                <div>
+                  <label className="text-[9px] tracking-widest font-black text-slate-400 block mb-1 uppercase">Phone Number</label>
+                  <input type="text" placeholder="0917 000 0000" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500 text-slate-800" />
+                </div>
+                <div>
+                  <label className="text-[9px] tracking-widest font-black text-slate-400 block mb-1 uppercase">Project Address</label>
+                  <input type="text" placeholder="Barangay, City" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500 text-slate-800" />
+                </div>
+                <div>
+                  <label className="text-[9px] tracking-widest font-black text-slate-400 block mb-1 uppercase">Email Address</label>
+                  <input type="email" placeholder="johndoe@example.com" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500 text-slate-800" />
+                </div>
+                <div>
+                  <label className="text-[9px] tracking-widest font-black text-slate-400 block mb-1 uppercase">Password</label>
+                  <input type="password" placeholder="••••••••" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500 text-slate-800" />
+                </div>
+
+                <button type="submit" className="w-full bg-[#0070c0] text-white text-xs font-bold tracking-widest py-3.5 rounded-xl shadow-md transition hover:bg-blue-700 pt-2">
+                  REGISTER NOW
+                </button>
+              </form>
+
+              <div className="text-center pt-2 border-t border-slate-100">
+                <button onClick={() => setIsRegisterMode(false)} className="text-[11px] text-slate-600 font-bold hover:underline tracking-wide">
+                  ALREADY A MEMBER? LOG IN
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+      </div>
     </div>
   );
 }

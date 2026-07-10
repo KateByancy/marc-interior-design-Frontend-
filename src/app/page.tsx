@@ -1,5 +1,4 @@
 // src/app/page.tsx
-"use html"
 "use client";
 import React, { useState } from 'react';
 import DashboardShell from '@/components/DashboardShell';
@@ -14,20 +13,22 @@ import PaymentsView from '@/components/Payments';
 import SettingsView from '@/components/Settings';
 
 export default function RootDashboardPage() {
-  // Navigation State Layout Engine
-  const [appContext, setAppContext] = useState<'landing' | 'login' | 'dashboard' | 'payments'>('landing');
+  // Master app routing context state management
+  const [appContext, setAppContext] = useState<'landing' | 'login' | 'dashboard' | 'payments' | 'settings'>('landing');
   const [activeTab, setActiveTab] = useState<string>('home');
 
-  // Direct Redirect Route Blocks
   if (appContext === 'landing') {
     return (
-      <LandingView onNavigate={(route) => {
-        if (route === 'login') setAppContext('login');
-        else {
-          setActiveTab(route);
-          setAppContext('dashboard');
-        }
-      }} />
+      <LandingView 
+        onNavigate={(route: string) => {
+          if (route === 'login') {
+            setAppContext('login');
+          } else {
+            setActiveTab(route);
+            setAppContext('dashboard');
+          }
+        }} 
+      />
     );
   }
 
@@ -40,31 +41,22 @@ export default function RootDashboardPage() {
     );
   }
 
-  if (appContext === 'payments') {
-    return (
-      <DashboardShell activeTab="home" setActiveTab={setActiveTab}>
-        <PaymentsView onBack={() => setAppContext('dashboard')} />
-      </DashboardShell>
-    );
-  }
+  // Master Dashboard view selector layout matching desktop layout variables
+  const renderContent = () => {
+    if (appContext === 'payments') {
+      return <PaymentsView onBack={() => setAppContext('dashboard')} />;
+    }
+    if (appContext === 'settings') {
+      return <SettingsView onLogout={() => setAppContext('landing')} />;
+    }
 
-  // Dashboard Sub-Tab View Router
-  const renderView = () => {
     switch (activeTab) {
       case 'home':
         return (
-          <div className="space-y-0">
-            <HomeView />
-            <div className="px-4 pb-4">
-              <div 
-                onClick={() => setAppContext('payments')} 
-                className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:bg-slate-100 transition cursor-pointer"
-              >
-                <span className="text-xs font-black tracking-wider text-slate-800">DIRECT PAYMENT PORTAL</span>
-                <span className="text-[10px] text-blue-500 mt-0.5 font-bold uppercase">Launch GCash Flow</span>
-              </div>
-            </div>
-          </div>
+          <HomeView 
+            onOpenSettings={() => setAppContext('settings')} 
+            onOpenPayments={() => setAppContext('payments')} 
+          />
         );
       case 'work':
         return <WorkView />;
@@ -74,16 +66,20 @@ export default function RootDashboardPage() {
         return <TrackView />;
       case 'chat':
         return <ChatView />;
-      case 'settings':
-        return <SettingsView onLogout={() => setAppContext('landing')} />;
       default:
         return <HomeView />;
     }
   };
 
   return (
-    <DashboardShell activeTab={activeTab} setActiveTab={setActiveTab}>
-      {renderView()}
+    <DashboardShell 
+      activeTab={appContext === 'settings' ? 'settings' : appContext === 'payments' ? 'home' : activeTab} 
+      setActiveTab={(tab: string) => {
+        setAppContext('dashboard'); // clear special screens if clicking desktop sidebar or mobile tabs
+        setActiveTab(tab);
+      }}
+    >
+      {renderContent()}
     </DashboardShell>
   );
 }
