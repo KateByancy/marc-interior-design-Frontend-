@@ -1,10 +1,12 @@
-﻿// src/components/Landing.tsx
+// src/components/Landing.tsx
 "use client";
 import React, { useState } from 'react';
 import { Home, LayoutGrid, Calendar, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 
+type DashboardTab = 'home' | 'work' | 'book' | 'track' | 'chat';
+
 interface LandingProps {
-  onNavigate: (route: string) => void;
+  onNavigate: (route: DashboardTab) => void;
 }
 
 export default function Landing({ onNavigate }: LandingProps) {
@@ -144,7 +146,7 @@ export default function Landing({ onNavigate }: LandingProps) {
           {/* 5. FOOTER WORKSPACE TRIGGER BUTTON */}
           <div className="px-6 py-4">
             <button 
-              onClick={() => onNavigate('login')}
+              onClick={() => onNavigate('home')}
               className="w-full bg-[#101935] hover:bg-[#162249] text-blue-300 font-serif font-black tracking-widest text-xs py-4 rounded-2xl border border-blue-900/40 transition shadow-xl uppercase flex flex-col items-center space-y-0.5 justify-center"
             >
               <span className="text-white tracking-widest text-[11px]">READY TO BEGIN?</span>

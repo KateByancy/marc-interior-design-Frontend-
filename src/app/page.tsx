@@ -1,31 +1,36 @@
 // src/app/page.tsx
 "use client";
 import React, { useState } from 'react';
-import DashboardShell from '@/components/DashboardShell';
-import HomeView from '@/components/Home';
-import WorkView from '@/components/Work';
-import BookView from '@/components/Book';
-import TrackView from '@/components/Track';
-import ChatView from '@/components/Chat';
-import LandingView from '@/components/Landing';
-import AuthView from '@/components/Auth';
-import PaymentsView from '@/components/Payments';
-import SettingsView from '@/components/Settings';
+import DashboardShell from './(client)/dashboardshell/page';
+import HomeView from './(client)/home/page';
+import WorkView from './(client)/work/page';
+import BookView from './(client)/book/page';
+import TrackView from './(client)/track/page';
+import ChatView from './(client)/chat/page';
+import LandingView from './(client)/landing/page';
+import PaymentsView from './(client)/payments/page';
+import SettingsView from './(client)/settings/page';
+import LoginView from './(client)/login/page';
+import RegisterView from './(client)/register/page';
 
 export default function RootDashboardPage() {
-  // Master app routing context state management
-  const [appContext, setAppContext] = useState<'landing' | 'login' | 'dashboard' | 'payments' | 'settings'>('landing');
+  // 1. Added 'register' to your App Context state manager
+  const [appContext, setAppContext] = useState<'landing' | 'login' | 'register' | 'dashboard' | 'payments' | 'settings'>('landing');
   const [activeTab, setActiveTab] = useState<string>('home');
 
+  // Handle views before the dashboard layout mounts
   if (appContext === 'landing') {
     return (
       <LandingView 
         onNavigate={(route: string) => {
           if (route === 'login') {
             setAppContext('login');
+          } else if (route === 'register') {
+            setAppContext('register');
           } else {
-            setActiveTab(route);
-            setAppContext('dashboard');
+            // Force authentication before accessing dashboard pages if needed,
+            // or leave this if you want unauthenticated users to see sections.
+            setAppContext('login'); 
           }
         }} 
       />
@@ -34,9 +39,20 @@ export default function RootDashboardPage() {
 
   if (appContext === 'login') {
     return (
-      <AuthView 
-        onAuthSuccess={() => setAppContext('dashboard')} 
+      <LoginView 
+        onLoginSuccess={() => setAppContext('dashboard')} 
         onBackToLanding={() => setAppContext('landing')} 
+      />
+    );
+  }
+
+  // 2. Render the Register Screen conditionally
+  if (appContext === 'register') {
+    return (
+      <RegisterView 
+        // Redirect them straight into the dashboard or to login after registering
+        onRegisterSuccess={() => setAppContext('login')}
+        onBackToLogin={() => setAppContext('login')}
       />
     );
   }
