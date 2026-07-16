@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -11,14 +11,11 @@ import {
   Map, 
   CreditCard, 
   Settings, 
-  LogOut,
-  Menu,
-  X
+  LogOut
 } from 'lucide-react';
 
 export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navItems = [
     { label: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -76,51 +73,6 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
           </Link>
         </div>
       </aside>
-
-      {/* MOBILE HEADER BAR */}
-      <header className="md:hidden w-full bg-[#0070c0] text-white px-5 py-4 flex items-center justify-between sticky top-0 z-40 shadow-sm">
-        <span className="font-serif font-bold tracking-wider text-sm uppercase">Marc Admin</span>
-        <button onClick={() => setIsMobileOpen(!isMobileOpen)} className="p-1 rounded-lg hover:bg-white/10 transition">
-          {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </header>
-
-      {/* MOBILE DRAWER OVERLAY */}
-      {isMobileOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-end">
-          <div className="w-64 h-full bg-[#102243] text-white p-6 flex flex-col justify-between shadow-2xl animate-in slide-in-from-right duration-150">
-            <div className="space-y-6">
-              <div className="flex justify-between items-center pb-3 border-b border-white/10">
-                <span className="font-serif font-bold text-sm uppercase tracking-wide">Navigation</span>
-                <button onClick={() => setIsMobileOpen(false)}><X className="w-5 h-5" /></button>
-              </div>
-              <nav className="space-y-1">
-                {navItems.map((item) => {
-                  const active = checkActive(item.path);
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.path}
-                      href={item.path}
-                      onClick={() => setIsMobileOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wider uppercase transition-all ${
-                        active ? 'bg-[#0070c0] text-white' : 'text-slate-300 hover:bg-white/5'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-            <Link href="/admin" className="flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wider uppercase text-rose-400 hover:bg-rose-500/10">
-              <LogOut className="w-4 h-4" />
-              <span>Exit Session</span>
-            </Link>
-          </div>
-        </div>
-      )}
 
       {/* INTERACTIVE WORK AREA */}
       <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8">
