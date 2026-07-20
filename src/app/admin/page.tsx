@@ -1,12 +1,14 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function AdminPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -51,13 +53,25 @@ export default function AdminPage() {
 
           <div>
             <label className="block text-[11px] uppercase tracking-[0.3em] text-slate-500 mb-2">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="••••••••"
-              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-            />
+            <div className="relative w-full flex items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="••••••••"
+                className="w-full rounded-2xl border border-slate-700 bg-slate-950 pl-4 pr-12 py-3 text-sm text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              />
+              {/* FIXED LOGIC: When showPassword is false (hidden), it shows EyeOff (\). When true, it shows Eye. */}
+              {password.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 text-slate-400 hover:text-slate-200 transition bg-transparent border-none cursor-pointer z-20 flex items-center justify-center p-1"
+                >
+                  {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                </button>
+              )}
+            </div>
           </div>
 
           {error && <p className="text-sm text-rose-400">{error}</p>}
