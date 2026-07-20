@@ -1,16 +1,22 @@
-// src/components/Work.tsx
 "use client";
 import React, { useState } from 'react';
-import { Layers, Eye } from 'lucide-react';
+import { Layers, Eye, X } from 'lucide-react';
 
 export default function Work() {
   const categories = ['All', 'Modern', 'Luxury', 'Minimalist'];
   const [selectedCategory, setSelectedCategory] = useState('All');
+  
+  // Track the active image item for the fullscreen preview modal
+  const [activePreviewItem, setActivePreviewItem] = useState<{
+    title: string;
+    category: string;
+    image: string;
+  } | null>(null);
 
   const portfolioItems = [
-    { id: 1, title: 'Nordic Living Room', category: 'Minimalist', image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=80' },
-    { id: 2, title: 'Metropolitan Penthouse', category: 'Luxury', image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80' },
-    { id: 3, title: 'Japandi Bedroom Accent', category: 'Modern', image: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=600&q=80' },
+    { id: 1, title: 'Nordic Living Room', category: 'Minimalist', image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85' },
+    { id: 2, title: 'Metropolitan Penthouse', category: 'Luxury', image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85' },
+    { id: 3, title: 'Japandi Bedroom Accent', category: 'Modern', image: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=85' },
   ];
 
   const filteredItems = selectedCategory === 'All' 
@@ -45,7 +51,11 @@ export default function Work() {
       <div className="space-y-4">
         {filteredItems.map((item) => (
           <div key={item.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm group">
-            <div className="relative h-48 bg-slate-100 overflow-hidden">
+            {/* Clickable Image container area */}
+            <div 
+              onClick={() => setActivePreviewItem(item)}
+              className="relative h-48 bg-slate-100 overflow-hidden cursor-zoom-in"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={item.image} 
@@ -58,13 +68,54 @@ export default function Work() {
             </div>
             <div className="p-4 flex justify-between items-center">
               <h4 className="text-xs font-bold text-slate-800">{item.title}</h4>
-              <button className="text-blue-500 hover:text-blue-600 transition">
+              <button 
+                onClick={() => setActivePreviewItem(item)}
+                className="text-blue-500 hover:text-blue-600 transition p-1.5 hover:bg-slate-50 rounded-lg"
+              >
                 <Eye className="w-4 h-4" />
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Interactive Cinematic Lightbox Modal Sheet Container */}
+      {activePreviewItem && (
+        <div 
+          onClick={() => setActivePreviewItem(null)}
+          className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-[100] flex flex-col justify-center items-center p-4 animate-in fade-in duration-200"
+        >
+          {/* Top Menu Actions Panel */}
+          <div className="w-full max-w-4xl flex justify-between items-center mb-3 text-white">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">
+                {activePreviewItem.category}
+              </span>
+              <h3 className="text-sm font-bold tracking-tight">{activePreviewItem.title}</h3>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActivePreviewItem(null)}
+              className="p-2.5 bg-white/10 hover:bg-white/20 active:scale-95 rounded-full transition text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* High-Fidelity Preview Box Wrapper */}
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="relative w-full max-w-4xl max-h-[75vh] rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-white/10 flex items-center justify-center animate-in zoom-in-95 duration-200"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={activePreviewItem.image} 
+              alt={activePreviewItem.title} 
+              className="w-full h-auto max-h-[75vh] object-contain"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

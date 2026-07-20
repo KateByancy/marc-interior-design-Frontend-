@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Home, ChevronLeft, Loader2, ShieldCheck, Layers } from 'lucide-react';
 
 interface RegisterViewProps {
-  onRegisterSuccess?: () => void;
+  // Modified callback signature to pass back the registered user's actual full name
+  onRegisterSuccess?: (registeredName: string) => void;
   onBackToLogin?: () => void;
 }
 
@@ -38,10 +39,19 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
       }
 
       setIsLoading(false);
+      
+      // 💾 SAVE TO LOCALSTORAGE: Stash user details temporarily so the login view can find them!
+      localStorage.setItem('mockRegisteredUser', JSON.stringify({
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase()
+      }));
+      
+      // If a success listener is wired to a top-level wrapper component, pass the real name up
       if (onRegisterSuccess) {
-        onRegisterSuccess();
+        onRegisterSuccess(fullName);
       } else {
-        router.push('/login');
+        // Fallback or development redirect strategy
+        router.push('/home');
       }
     }, 1500);
   };
@@ -52,10 +62,8 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
       {/* Main Split Layout Container */}
       <div className="w-full h-screen md:h-auto md:max-w-5xl md:min-h-[750px] bg-[#051a30] md:rounded-[24px] overflow-hidden shadow-2xl flex flex-col md:flex-row border border-white/5 relative">
         
-        {/* ================= LEFT SIDE: BRAND PANEL (Hidden on mobile) ================= */}
+        {/* ================= LEFT SIDE: BRAND PANEL ================= */}
         <div className="hidden md:flex md:w-[45%] bg-gradient-to-b from-[#004b8d] to-[#012a52] p-10 flex-col justify-between relative border-r border-white/5">
-          
-          {/* Back button */}
           <div>
             <Link 
               href="/" 
@@ -66,7 +74,6 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
             </Link>
           </div>
 
-          {/* Core Branding Info */}
           <div className="my-auto space-y-6">
             <div className="w-16 h-16 bg-[#031930] rounded-2xl flex items-center justify-center border border-white/10 shadow-inner">
               <Home className="w-8 h-8 text-slate-100" />
@@ -84,7 +91,6 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
             </p>
           </div>
 
-          {/* Features Checklist */}
           <div className="space-y-3 border-t border-white/10 pt-6">
             <div className="flex items-center space-x-3 text-xs text-slate-200/90">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -100,7 +106,6 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
         {/* ================= RIGHT SIDE: FORM PANEL ================= */}
         <div className="flex-1 bg-[#051a30] p-6 md:p-12 flex flex-col justify-between overflow-y-auto">
           
-          {/* Mobile-Only Header Utilities */}
           <div className="flex justify-between items-center w-full md:hidden pt-2 pb-6">
             <button 
               type="button"
@@ -118,13 +123,11 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
             <span className="text-[10px] opacity-40 font-mono tracking-widest">MARC DESIGN</span>
           </div>
 
-          {/* Form Content Header */}
           <div className="space-y-1.5 mb-6 md:mb-4">
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">Create Account</h2>
             <p className="text-xs text-slate-400 font-light">Please fill out your details to sign up with us.</p>
           </div>
 
-          {/* Scrollable Form Inputs */}
           <form onSubmit={handleRegister} className="space-y-4 flex-1 flex flex-col justify-center">
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center font-medium">
@@ -133,34 +136,29 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Full Name */}
               <div className="space-y-1.5">
                 <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Full Name</label>
                 <input 
                   type="text" 
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  required
-                  placeholder="John Doe Brown" 
+                  required 
                   className="w-full bg-[#09223c] border border-white/5 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-xs outline-none focus:border-sky-500/50 focus:bg-[#0b2848] transition font-medium" 
                 />
               </div>
 
-              {/* Phone Number */}
               <div className="space-y-1.5">
                 <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Phone Number</label>
                 <input 
                   type="tel" 
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  required
-                  placeholder="(09) 000 0000" 
+                  required 
                   className="w-full bg-[#09223c] border border-white/5 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-xs outline-none focus:border-sky-500/50 focus:bg-[#0b2848] transition font-medium" 
                 />
               </div>
             </div>
 
-            {/* Project Address */}
             <div className="space-y-1.5">
               <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Project Address</label>
               <input 
@@ -168,12 +166,10 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
                 value={projectAddress}
                 onChange={(e) => setProjectAddress(e.target.value)}
                 required
-                placeholder="Barangay, City, Province" 
                 className="w-full bg-[#09223c] border border-white/5 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-xs outline-none focus:border-sky-500/50 focus:bg-[#0b2848] transition font-medium" 
               />
             </div>
 
-            {/* Email Address */}
             <div className="space-y-1.5">
               <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Email Address</label>
               <input 
@@ -181,12 +177,10 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="john.doe@example.com" 
                 className="w-full bg-[#09223c] border border-white/5 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-xs outline-none focus:border-sky-500/50 focus:bg-[#0b2848] transition font-medium" 
               />
             </div>
 
-            {/* Password */}
             <div className="space-y-1.5">
               <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Password</label>
               <input 
@@ -194,16 +188,14 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="••••••••" 
                 className="w-full bg-[#09223c] border border-white/5 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-xs outline-none focus:border-sky-500/50 focus:bg-[#0b2848] transition tracking-widest" 
               />
             </div>
 
-            {/* Register Button */}
             <button 
               type="submit" 
               disabled={isLoading}
-              className="w-full bg-[#102542] hover:bg-[#16335a] active:bg-[#0d1d33] disabled:opacity-75 text-white font-bold text-xs py-3.5 rounded-xl transition uppercase tracking-widest shadow-lg mt-2 flex items-center justify-center space-x-2 border border-white/10"
+              className="w-full bg-[#102542] hover:bg-[#16335a] active:bg-[#0d1d33] disabled:opacity-75 text-white font-bold text-xs py-3.5 rounded-xl transition uppercase tracking-widest shadow-lg mt-2 flex items-center justify-center space-x-2 border border-white/10 cursor-pointer"
             >
               {isLoading ? (
                 <>
@@ -216,7 +208,6 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
             </button>
           </form>
 
-          {/* Bottom Third-Party Credentials & Navigation */}
           <div className="w-full space-y-4 mt-6">
             <div className="flex items-center justify-center space-x-2 text-[8px] text-slate-400 uppercase tracking-wider">
               <div className="h-px bg-white/5 flex-1"></div>
@@ -224,23 +215,28 @@ export default function ClientRegisterPage({ onRegisterSuccess, onBackToLogin }:
               <div className="h-px bg-white/5 flex-1"></div>
             </div>
 
-            {/* Google Authentication Button */}
             <button 
               type="button" 
-              className="w-full bg-white text-slate-800 hover:bg-slate-100 font-bold text-xs py-3 rounded-xl transition flex items-center justify-center space-x-2.5 shadow-sm"
+              onClick={() => {
+                if (onRegisterSuccess) onRegisterSuccess("Google User");
+              }}
+              className="w-full bg-white text-slate-800 hover:bg-slate-100 font-bold text-xs py-3 rounded-xl transition flex items-center justify-center space-x-2.5 shadow-sm cursor-pointer"
             >
               <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
               <span>Continue with Google</span>
             </button>
 
-            {/* Redirection Link */}
             <div className="text-center pt-2">
-              <Link 
-                href="/login" 
-                className="text-[9px] font-black tracking-widest text-slate-300 hover:text-white hover:underline uppercase transition"
+              <button 
+                type="button"
+                onClick={() => {
+                  if (onBackToLogin) onBackToLogin();
+                  else router.push('/login');
+                }}
+                className="text-[9px] font-black tracking-widest text-slate-300 hover:text-white hover:underline uppercase transition bg-transparent border-none cursor-pointer"
               >
                 Already a member? Log In
-              </Link>
+              </button>
             </div>
           </div>
 

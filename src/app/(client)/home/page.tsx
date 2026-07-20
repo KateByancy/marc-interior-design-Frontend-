@@ -9,7 +9,7 @@ interface HomeProps {
 }
 
 export default function Home({ onOpenSettings, onOpenPayments }: HomeProps) {
-  const [area, setArea] = useState<number>(25);
+  const [area, setArea] = useState<number>(0);
   const [style, setStyle] = useState<string>('Modern');
   const [complexity, setComplexity] = useState<string>('Standard');
   const [estimate, setEstimate] = useState<{ min: number; max: number }>({ min: 0, max: 0 });
