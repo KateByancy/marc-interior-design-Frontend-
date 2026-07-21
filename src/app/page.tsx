@@ -12,6 +12,7 @@ import PaymentsView from './(client)/payments/page';
 import SettingsView from './(client)/settings/page';
 import LoginView from './(client)/login/page';
 import RegisterView from './(client)/register/page';
+import SchedulesView from'./(client)/schedules/page';
 
 export default function RootDashboardPage() {
   // 1. Added 'register' to your App Context state manager
