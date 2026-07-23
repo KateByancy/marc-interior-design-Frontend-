@@ -1,15 +1,15 @@
 "use client";
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, Home, Loader2, ShieldCheck, Layout, Eye } from 'lucide-react';
 
 interface LoginViewProps {
   onLoginSuccess?: (userName?: string) => void; // pass the authenticated user name back to the parent
   onBackToLanding: () => void;
+  onNavigateToRegister: () => void; // Added prop for registration routing
 }
 
-export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: LoginViewProps) {
+export default function ClientLoginPage({ onLoginSuccess, onBackToLanding, onNavigateToRegister }: LoginViewProps) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -65,7 +65,7 @@ export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: Log
           <button 
             type="button" 
             onClick={onBackToLanding} 
-            className="flex items-center space-x-2 text-xs font-semibold tracking-wider uppercase text-slate-200/80 hover:text-white transition group self-start"
+            className="flex items-center space-x-2 text-xs font-semibold tracking-wider uppercase text-slate-200/80 hover:text-white transition group self-start cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             <span>Return to Main</span>
@@ -115,7 +115,7 @@ export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: Log
               <button 
                 type="button" 
                 onClick={onBackToLanding} 
-                className="p-2.5 bg-white/15 hover:bg-white/20 active:scale-95 rounded-xl transition text-white"
+                className="p-2.5 bg-white/15 hover:bg-white/20 active:scale-95 rounded-xl transition text-white cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -159,7 +159,6 @@ export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: Log
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="email"
                   className="w-full bg-white text-slate-900 rounded-xl px-4 py-3 text-xs lg:text-sm outline-none shadow-md font-medium placeholder:text-slate-400 border border-transparent focus:border-[#00529b] transition"
                 />
               </div>
@@ -175,7 +174,6 @@ export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: Log
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    placeholder="password"
                     className={`w-full bg-white text-slate-900 rounded-xl pl-4 pr-12 py-3 text-xs lg:text-sm outline-none shadow-md placeholder:text-slate-400 border border-transparent focus:border-[#00529b] transition ${
                       !showPassword ? 'tracking-widest' : 'tracking-normal'
                     }`}
@@ -184,7 +182,7 @@ export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: Log
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-md transition-colors flex items-center justify-center"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-md transition-colors flex items-center justify-center cursor-pointer"
                     >
                       <div className="relative w-4 h-4 flex items-center justify-center">
                         <Eye className="w-4 h-4 shrink-0" />
@@ -230,14 +228,19 @@ export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: Log
                 type="button" 
                 className="w-full bg-white text-slate-700 hover:bg-slate-50 font-semibold text-xs lg:text-sm py-3 rounded-xl transition flex items-center justify-center space-x-2.5 shadow-md cursor-pointer"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
                 <span>Continue with Google</span>
               </button>
 
               <div className="text-center pt-2">
-                <Link href="/register" className="text-[9px] lg:text-xs font-bold tracking-widest text-slate-200 lg:text-slate-300 hover:text-white hover:underline uppercase transition">
+                <button 
+                  type="button"
+                  onClick={onNavigateToRegister}
+                  className="text-[9px] lg:text-xs font-bold tracking-widest text-slate-200 lg:text-slate-300 hover:text-white hover:underline uppercase transition cursor-pointer bg-transparent border-none"
+                >
                   New client? Create an account
-                </Link>
+                </button>
               </div>
             </div>
 

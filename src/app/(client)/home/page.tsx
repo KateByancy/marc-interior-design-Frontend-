@@ -1,19 +1,21 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { User, Calculator, ArrowRight, Wallet, CalendarRange, X, Check, Calendar, AlertCircle, Smartphone, ArrowLeft, Upload, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { User, Calculator, ArrowRight, Wallet, CalendarRange, X, Check, Calendar, AlertCircle, Smartphone, ArrowLeft, Upload, Clock, ChevronLeft, ChevronRight, Camera, ShieldCheck, Trash2, Settings, Bell, Lock, UserCheck, HelpCircle } from 'lucide-react';
 
 interface HomeProps {
   onOpenSettings?: () => void;
   onOpenPayments?: () => void;
   setActiveTab?: (tab: string) => void;
   userName?: string;
+  onLogout?: () => void;
 }
 
 export default function Home({ 
   onOpenSettings = () => console.log('Settings opened'), 
   onOpenPayments = () => console.log('Payments opened'),
   setActiveTab,
-  userName = 'Doe, John'
+  userName = 'Doe, John',
+  onLogout
 }: HomeProps) {
   const [area, setArea] = useState<number>(0);
   const [style, setStyle] = useState<string>('Modern');
@@ -281,7 +283,6 @@ export default function Home({
             </div>
           </div>
 
-          {/* Clickable Calendar View Button with Chevron Indicator */}
           <button 
             onClick={() => setShowCalendarView(!showCalendarView)}
             className="flex items-center space-x-2 bg-white/10 hover:bg-white/25 border border-white/20 px-4 py-2 rounded-xl text-xs font-bold tracking-wider transition cursor-pointer border-none text-white"
@@ -292,10 +293,7 @@ export default function Home({
           </button>
         </div>
 
-        {/* Dynamic Grid Layout: Living Room Card is fixed on the Left, Calendar appears on the Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
-          {/* Living Room Card (Strictly on the Left Side) */}
           <div className={`${showCalendarView ? 'lg:col-span-5' : 'lg:col-span-12 max-w-xl'} space-y-4 transition-all duration-300`}>
             <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-md space-y-6 relative">
               <div className="flex justify-between items-start">
@@ -338,7 +336,6 @@ export default function Home({
             </div>
           </div>
 
-          {/* Responsive Interactive Calendar Widget (Automatically appears on the Right when toggled) */}
           {showCalendarView && (
             <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6 animate-fadeIn">
               <div className="flex items-center justify-between">
@@ -361,9 +358,7 @@ export default function Home({
                 </div>
               </div>
 
-              {/* Calendar Grid Container */}
               <div className="w-full">
-                {/* Day Headers */}
                 <div className="grid grid-cols-7 gap-1 text-center mb-2">
                   {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d, index) => (
                     <span key={index} className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-1">
@@ -372,14 +367,11 @@ export default function Home({
                   ))}
                 </div>
 
-                {/* Days Grid */}
                 <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
-                  {/* Blank slots for previous month offset */}
                   {Array.from({ length: firstDayIndex }).map((_, index) => (
                     <div key={`empty-${index}`} className="h-9 sm:h-11" />
                   ))}
 
-                  {/* Actual Month Days */}
                   {Array.from({ length: daysInMonth }).map((_, index) => {
                     const dayNum = index + 1;
                     const isSelected = dayNum === selectedDate && currentMonth === 3 && currentYear === 2026;
@@ -415,7 +407,6 @@ export default function Home({
               </div>
             </div>
           )}
-
         </div>
       </div>
     );
@@ -424,27 +415,30 @@ export default function Home({
   // --- STANDARD DASHBOARD VIEW ---
   return (
     <div className="space-y-6 animate-fadeIn relative">
-      
-      {/* DESKTOP HEADER BAR */}
-      <div className="bg-[#0070c0] text-white rounded-2xl p-6 shadow-md flex justify-between items-center">
+      <div className="bg-[#0070c0] text-white rounded-2xl p-6 shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl font-serif font-black tracking-wide">{userName}</h2>
           <p className="text-xs text-blue-100 font-light mt-0.5">Your dream home is in progress.</p>
         </div>
         
-        <button 
-          onClick={onOpenSettings}
-          className="flex items-center space-x-2 bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 px-4 py-2.5 rounded-xl text-xs font-bold tracking-wider transition shadow-sm group cursor-pointer border-none"
+        <div 
+          onClick={() => {
+            if (setActiveTab) {
+              setActiveTab('profile');
+            }
+          }}
+          className="flex items-center space-x-3 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 px-4 py-2.5 rounded-xl text-xs font-bold tracking-wider transition shadow-sm group cursor-pointer"
         >
-          <User className="w-4 h-4 text-white group-hover:scale-110 transition" />
-          <span>ACCOUNT PROFILE</span>
-        </button>
+          <div className="flex items-center space-x-2">
+            <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-white text-xs shadow-inner group-hover:scale-105 transition">
+              <User className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span>ACCOUNT PROFILE</span>
+          </div>
+        </div>
       </div>
 
-      {/* DASHBOARD GRID CONTENT */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* LEFT COLUMN: FIXED ESTIMATE TOOL */}
         <div className="lg:col-span-2 bg-[#141b2d] text-white rounded-2xl p-6 shadow-xl border border-slate-800 flex flex-col justify-between space-y-6">
           <div className="space-y-4">
             <div className="flex items-center space-x-2 text-xs font-bold tracking-widest text-blue-400">
@@ -484,7 +478,6 @@ export default function Home({
             </div>
           </div>
 
-          {/* Pricing Results Output Bar */}
           <div className="border-t border-slate-800 pt-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
               <p className="text-[9px] tracking-widest font-black text-slate-400 uppercase">Estimated Range</p>
@@ -498,7 +491,6 @@ export default function Home({
           </div>
         </div>
 
-        {/* RIGHT COLUMN MODULES */}
         <div className="space-y-4 flex flex-col justify-between">
           <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-sm flex flex-col justify-center items-center space-y-3 flex-1">
             <p className="text-xs font-serif font-medium text-slate-700 leading-relaxed">
@@ -514,7 +506,6 @@ export default function Home({
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {/* PAYMENTS BUTTON */}
             <div 
               onClick={() => setCurrentView('payments')}
               className="bg-white border border-slate-200 rounded-2xl p-4 text-center shadow-sm hover:bg-slate-50 transition cursor-pointer flex flex-col items-center justify-center space-y-2 group"
@@ -528,7 +519,6 @@ export default function Home({
               </div>
             </div>
 
-            {/* SCHEDULES BUTTON */}
             <div 
               onClick={() => setCurrentView('schedules')}
               className="bg-white border border-slate-200 rounded-2xl p-4 text-center shadow-sm hover:bg-slate-50 transition cursor-pointer flex flex-col items-center justify-center space-y-2 group"
@@ -543,14 +533,11 @@ export default function Home({
             </div>
           </div>
         </div>
-
       </div>
 
-      {/* --- BOOK NOW POPUP MODAL --- */}
       {isBookingOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#1a1f2c] text-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl border border-slate-800 relative animate-fadeIn">
-            
             <button 
               onClick={() => setIsBookingOpen(false)}
               className="absolute top-6 right-6 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer border-none"
@@ -612,29 +599,26 @@ export default function Home({
                 <h3 className="text-xs font-black tracking-widest text-slate-400 uppercase font-sans">
                   Submit Booking Done!
                 </h3>
-
-                <div className="bg-[#f0f6fc] text-slate-900 rounded-3xl p-10 max-w-sm mx-auto shadow-xl flex flex-col items-center justify-center space-y-6">
-                  <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 text-white">
-                    <Check className="w-12 h-12 stroke-[3]" />
-                  </div>
-                  <h4 className="text-2xl font-serif font-black tracking-tight text-slate-800">
-                    Done Book!
-                  </h4>
+                <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-emerald-400">
+                  <Check className="w-8 h-8" />
                 </div>
-
+                <div className="space-y-2">
+                  <h4 className="text-lg font-serif font-bold text-white">Booking Request Received</h4>
+                  <p className="text-xs text-slate-400 max-w-md mx-auto">
+                    We have successfully logged your request for <span className="text-white font-bold">{serviceType}</span>. Our team will contact you shortly.
+                  </p>
+                </div>
                 <button 
                   onClick={() => setIsBookingOpen(false)}
-                  className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition cursor-pointer border-none"
+                  className="px-8 py-3 bg-white hover:bg-slate-100 text-slate-900 font-black text-xs uppercase tracking-wider rounded-xl transition cursor-pointer border-none shadow"
                 >
                   Close Window
                 </button>
               </div>
             )}
-
           </div>
         </div>
       )}
-
     </div>
   );
 }

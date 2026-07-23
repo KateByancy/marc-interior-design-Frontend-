@@ -1,33 +1,29 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Home, Grid, Calendar, Compass, MessageSquare } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Home, Grid, Calendar, Compass, MessageSquare, LogOut } from 'lucide-react';
 
 interface ShellProps {
   children?: React.ReactNode;
   activeTab?: string;
   setActiveTab?: (tab: string) => void;
   userName?: string;
+  onLogout?: () => void;
 }
 
 export default function DashboardShell({ 
   children, 
   activeTab: externalActiveTab, 
   setActiveTab: externalSetActiveTab, 
-  userName = 'Doe, John' 
+  userName = 'Doe, John',
+  onLogout
 }: ShellProps) {
-  const router = useRouter();
   const [internalTab, setInternalTab] = useState('home');
   const [isCollapsed, setIsCollapsed] = useState(true);
 
+  // Use external states if provided, otherwise fallback to internal state management
   const activeTab = externalActiveTab !== undefined ? externalActiveTab : internalTab;
-  const setActiveTab = externalSetActiveTab || ((tab: string) => {
-    setInternalTab(tab);
-    if (tab === 'home') router.push('/client');
-    else router.push(`/client/${tab}`);
-  });
+  const setActiveTab = externalSetActiveTab || setInternalTab;
 
-  // 'schedules' and 'payments' are intentionally excluded so they don't show on the sidebar
   const tabs = [
     { id: 'home', label: 'HOME', icon: Home, desktopLabel: 'Dashboard Home' },
     { id: 'work', label: 'WORK', icon: Grid, desktopLabel: 'Inspirations Portfolio' },
@@ -39,6 +35,14 @@ export default function DashboardShell({
   useEffect(() => {
     setIsCollapsed(true);
   }, []);
+
+  const handleLogoutClick = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      window.location.href = '/';
+    }
+  };
 
   return (
     <div className="w-full min-h-screen bg-slate-100 flex flex-col md:flex-row font-sans text-slate-800">
@@ -93,11 +97,28 @@ export default function DashboardShell({
 
         <div className={`py-3 border-t border-blue-600/30 transition-all duration-200 flex flex-col items-center ${isCollapsed ? 'px-0' : 'px-2 items-start'}`}>
           {!isCollapsed && (
-            <div className="mb-2 animate-in fade-in duration-200 text-left w-full px-1">
+            <button 
+              onClick={() => setActiveTab('profile')}
+              className="mb-3 text-left w-full px-1 bg-transparent border-none cursor-pointer group hover:opacity-80 transition"
+            >
               <p className="text-[9px] uppercase text-blue-200 tracking-wider font-bold">Logged In As</p>
-              <p className="text-xs font-bold text-white truncate max-w-[180px]">{userName}</p>
-            </div>
+              <p className="text-xs font-bold text-white truncate max-w-[180px] group-hover:underline">{userName}</p>
+            </button>
           )}
+
+          <button
+            onClick={handleLogoutClick}
+            title={isCollapsed ? 'Log Out' : undefined}
+            className={`w-full flex items-center rounded-xl text-xs font-bold tracking-wide transition-all duration-200 cursor-pointer border-none text-blue-100/80 hover:bg-red-500/20 hover:text-white bg-transparent mb-2 ${
+              isCollapsed ? 'justify-center p-3.5' : 'space-x-3 px-3 py-2.5'
+            }`}
+          >
+            <LogOut className="w-4 h-4 shrink-0 stroke-[1.8]" />
+            {!isCollapsed && (
+              <span className="animate-in fade-in duration-200 whitespace-nowrap">Log Out</span>
+            )}
+          </button>
+
           <p className="text-[9px] text-blue-200/60 tracking-wider font-mono w-full text-center mt-1">
             {isCollapsed ? '©26' : '© 2026 MARC CUSTOM DESIGNS'}
           </p>
