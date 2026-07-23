@@ -1,17 +1,33 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Home, Grid, Calendar, Compass, MessageSquare } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface ShellProps {
-  children: React.ReactNode;
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  userName?: string; // Added to pass down the authenticated user context dynamically
+  children?: React.ReactNode;
+  activeTab?: string;
+  setActiveTab?: (tab: string) => void;
+  userName?: string;
 }
 
-export default function DashboardShell({ children, activeTab, setActiveTab, userName = 'Doe, John' }: ShellProps) {
+export default function DashboardShell({ 
+  children, 
+  activeTab: externalActiveTab, 
+  setActiveTab: externalSetActiveTab, 
+  userName = 'Doe, John' 
+}: ShellProps) {
+  const router = useRouter();
+  const [internalTab, setInternalTab] = useState('home');
   const [isCollapsed, setIsCollapsed] = useState(true);
 
+  const activeTab = externalActiveTab !== undefined ? externalActiveTab : internalTab;
+  const setActiveTab = externalSetActiveTab || ((tab: string) => {
+    setInternalTab(tab);
+    if (tab === 'home') router.push('/client');
+    else router.push(`/client/${tab}`);
+  });
+
+  // 'schedules' and 'payments' are intentionally excluded so they don't show on the sidebar
   const tabs = [
     { id: 'home', label: 'HOME', icon: Home, desktopLabel: 'Dashboard Home' },
     { id: 'work', label: 'WORK', icon: Grid, desktopLabel: 'Inspirations Portfolio' },
@@ -36,7 +52,6 @@ export default function DashboardShell({ children, activeTab, setActiveTab, user
         }`}
       >
         <div className="space-y-8">
-          {/* Brand Identity Cluster */}
           <div className={`flex items-center space-x-3 py-4 border-b border-blue-600/30 transition-all duration-200 ${isCollapsed ? 'justify-center px-0' : 'px-2'}`}>
             <div className="w-9 h-9 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center font-serif font-black border border-white/20 shrink-0">
               M
@@ -49,7 +64,6 @@ export default function DashboardShell({ children, activeTab, setActiveTab, user
             )}
           </div>
 
-          {/* Navigation Action Hub */}
           <nav className="space-y-1">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
@@ -59,12 +73,12 @@ export default function DashboardShell({ children, activeTab, setActiveTab, user
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   title={isCollapsed ? tab.desktopLabel : undefined}
-                  className={`w-full flex items-center rounded-xl text-xs font-bold tracking-wide transition-all duration-200 ${
+                  className={`w-full flex items-center rounded-xl text-xs font-bold tracking-wide transition-all duration-200 cursor-pointer border-none ${
                     isCollapsed ? 'justify-center p-3.5' : 'space-x-3 px-4 py-3'
                   } ${
                     isSelected 
                       ? 'bg-white text-[#0070c0] shadow-md font-black scale-[1.02]' 
-                      : 'text-blue-100/80 hover:bg-white/10 hover:text-white'
+                      : 'text-blue-100/80 hover:bg-white/10 hover:text-white bg-transparent'
                   }`}
                 >
                   <IconComponent className={`w-4 h-4 shrink-0 ${isSelected ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
@@ -77,7 +91,6 @@ export default function DashboardShell({ children, activeTab, setActiveTab, user
           </nav>
         </div>
 
-        {/* Brand Profile & System Footer Node */}
         <div className={`py-3 border-t border-blue-600/30 transition-all duration-200 flex flex-col items-center ${isCollapsed ? 'px-0' : 'px-2 items-start'}`}>
           {!isCollapsed && (
             <div className="mb-2 animate-in fade-in duration-200 text-left w-full px-1">
@@ -93,11 +106,9 @@ export default function DashboardShell({ children, activeTab, setActiveTab, user
 
       {/* 2. MAIN CONTENT AREA */}
       <main className="flex-1 overflow-y-auto bg-slate-50 relative p-4 md:p-8 pb-24 md:pb-8 w-full max-w-7xl mx-auto">
-        {/* Pass down user props context to components mounted in children view */}
         {React.Children.map(children, child => {
           if (React.isValidElement(child)) {
-            // This ensures children components (like Book) receive the real profile name automatically
-            return React.cloneElement(child, { userName } as any);
+            return React.cloneElement(child, { userName, setActiveTab } as any);
           }
           return child;
         })}
@@ -112,7 +123,7 @@ export default function DashboardShell({ children, activeTab, setActiveTab, user
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-col items-center justify-center transition-all px-2 py-1 rounded-xl ${
+              className={`flex flex-col items-center justify-center transition-all px-2 py-1 rounded-xl cursor-pointer border-none bg-transparent ${
                 isSelected ? 'text-white scale-105 font-black' : 'text-blue-100/70'
               }`}
             >

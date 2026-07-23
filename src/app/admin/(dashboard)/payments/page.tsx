@@ -39,7 +39,7 @@ export default function PaymentsVerification() {
       client: "John Doe",
       amount: "40,000",
       date: "Apr 24, 2026",
-      method: "ACH Transfer",
+      method: "Gcash Transfer",
       status: "pending"
     }
   ]);

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ChevronLeft, Home, Loader2, ShieldCheck, Layout, Eye } from 'lucide-react';
 
 interface LoginViewProps {
-  onLoginSuccess?: () => void; // Made optional to prevent breaking errors
+  onLoginSuccess?: (userName?: string) => void; // pass the authenticated user name back to the parent
   onBackToLanding: () => void;
 }
 
@@ -38,7 +38,7 @@ export default function ClientLoginPage({ onLoginSuccess, onBackToLanding }: Log
         
         // SAFE PROPKIT CHECK: Checks if the function exists before running it
         if (onLoginSuccess && typeof onLoginSuccess === 'function') {
-          onLoginSuccess();
+          onLoginSuccess(email.trim());
         } else {
           // Fallback redirection path if your state router isn't attached
           router.push('/home');

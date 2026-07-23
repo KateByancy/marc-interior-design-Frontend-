@@ -1,19 +1,17 @@
 // src/app/page.tsx
 "use client";
 import React, { useState } from 'react';
-import DashboardShell from './(client)/dashboardshell/page';
-import HomeView from './(client)/home/page';
-import WorkView from './(client)/work/page';
-import BookView from './(client)/book/page';
-import TrackView from './(client)/track/page';
-import ChatView from './(client)/chat/page';
-import LandingView from './(client)/landing/page';
-import PaymentsView from './(client)/payments/page';
-import SettingsView from './(client)/settings/page';
-import LoginView from './(client)/login/page';
-import RegisterView from './(client)/register/page';
-import SchedulesView from'./(client)/schedules/page';
-
+import DashboardShell from './client/(dashboard)/dashboardshell/page';
+import HomeView from './client/(dashboard)/home/page';
+import WorkView from './client/(dashboard)/work/page';
+import BookView from './client/(dashboard)/book/page';
+import TrackView from './client/(dashboard)/track/page';
+import ChatView from './client/(dashboard)/chat/page';
+import LandingView from './client/(dashboard)/landing/page';
+import PaymentsView from './client/(dashboard)/payments/page';
+import SettingsView from './client/(dashboard)/settings/page';
+import LoginView from './client/(dashboard)/login/page';
+import RegisterView from './client/(dashboard)/register/page';
 export default function RootDashboardPage() {
   // 1. Added 'register' to your App Context state manager
   const [appContext, setAppContext] = useState<'landing' | 'login' | 'register' | 'dashboard' | 'payments' | 'settings'>('landing');

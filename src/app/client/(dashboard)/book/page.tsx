@@ -1,12 +1,15 @@
 "use client";
-import React, { useState } from 'react';
-import { Calendar, Plus, CheckCircle, X, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Plus, CheckCircle, X, ChevronLeft, ChevronRight, ChevronDown, Clock } from 'lucide-react';
 
 export default function Book() {
   const [modalMode, setModalMode] = useState<'none' | 'book_form' | 'book_done' | 'schedule_form' | 'schedule_done'>('none');
   const [serviceType, setServiceType] = useState('Living Room Makeover');
   const [description, setDescription] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  
+  // Track submission/confirmation workflow state ('none' | 'pending' | 'confirmed')
+  const [scheduleStatus, setScheduleStatus] = useState<'none' | 'pending' | 'confirmed'>('none');
   
   // Track the calendar view using active year and month indices
   const [currentYear, setCurrentYear] = useState(2026);
@@ -63,6 +66,16 @@ export default function Book() {
   const isPrevDisabled = currentYear === 2026 && currentMonthIndex === 0;
   const isNextDisabled = currentYear === 2036 && currentMonthIndex === 11;
 
+  // Effect to automatically hide modal after 3 seconds ONLY when 'book_done' or 'schedule_done' is active
+  useEffect(() => {
+    if (modalMode === 'book_done' || modalMode === 'schedule_done') {
+      const timer = setTimeout(() => {
+        setModalMode('none');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [modalMode]);
+
   return (
     <div className="p-4 space-y-4 animate-fadeIn relative w-full">
       
@@ -78,27 +91,66 @@ export default function Book() {
         </button>
       </div>
 
-      {/* Baseline Overview Card */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-        <div>
-          <h3 className="text-xs font-bold text-slate-800">Living Room Design</h3>
-          <p className="text-[11px] text-slate-500 italic mt-1">
-            {selectedDate ? `Scheduled for: ${selectedDate}` : '"I want modern design"'}
-          </p>
+      {/* Baseline Overview Card - Visible only while not yet fully confirmed by admin */}
+      {scheduleStatus !== 'confirmed' && (
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="space-y-1.5">
+            {scheduleStatus === 'pending' && (
+              <span className="inline-flex items-center space-x-1 bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <Clock className="w-3 h-3" />
+                <span>Pending</span>
+              </span>
+            )}
+            <h3 className="text-xs font-bold text-slate-800">Living Room Design</h3>
+            <p className="text-[11px] text-slate-500 italic">
+              {selectedDate ? `Scheduled for: ${selectedDate}` : '"I want modern design"'}
+            </p>
+          </div>
+          <button 
+            onClick={() => { setModalMode('schedule_form'); setShowQuickSelect(false); }} 
+            className="bg-[#1a2138] text-white text-[9px] font-bold tracking-widest px-3 py-2 rounded-lg hover:bg-slate-800 transition w-full sm:w-auto text-center cursor-pointer"
+          >
+            {scheduleStatus === 'pending' ? 'RESCHEDULE DATE' : '+ SCHEDULE DATE'}
+          </button>
         </div>
-        <button onClick={() => { setModalMode('schedule_form'); setShowQuickSelect(false); }} className="bg-[#1a2138] text-white text-[9px] font-bold tracking-widest px-3 py-2 rounded-lg hover:bg-slate-800 transition w-full sm:w-auto text-center cursor-pointer">
-          + SCHEDULE DATE
-        </button>
-      </div>
+      )}
+
+      {/* Confirmed Schedules View Panel (Appears after admin confirmation) */}
+      {scheduleStatus === 'confirmed' && (
+        <div className="space-y-3">
+          <div className="flex items-center space-x-2 text-xs font-bold tracking-wider text-slate-700 pt-2">
+            <CheckCircle className="w-4 h-4 text-emerald-500" />
+            <span>CONFIRMED SCHEDULES</span>
+          </div>
+          <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <span className="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Confirmed</span>
+              <h3 className="text-xs font-bold text-slate-800 mt-2">Living Room Design</h3>
+              <p className="text-[11px] text-slate-600 font-medium mt-1">
+                Locked Schedule Date: <span className="font-bold text-slate-900">{selectedDate}</span>
+              </p>
+              <p className="text-[10px] text-slate-500 italic mt-0.5">"I want modern design"</p>
+            </div>
+            <div className="flex items-center space-x-2 w-full sm:w-auto">
+              <span className="text-[10px] text-emerald-600 font-bold bg-white px-3 py-1.5 rounded-lg border border-emerald-200 shadow-sm w-full sm:w-auto text-center">
+                Ready for Execution
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* LAYER OVERLAYS: MODAL CONFIGURATIONS */}
       {modalMode !== 'none' && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] flex items-center justify-center p-4 overflow-y-auto">
           <div className="w-full max-w-md bg-white rounded-3xl p-5 md:p-6 shadow-2xl space-y-4 border border-slate-100 my-auto animate-scaleIn relative">
             
-            <button onClick={() => setModalMode('none')} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:bg-slate-100 transition cursor-pointer">
-              <X className="w-4 h-4" />
-            </button>
+            {/* Show X Close button for all modes except book_done and schedule_done */}
+            {modalMode !== 'book_done' && modalMode !== 'schedule_done' && (
+              <button onClick={() => setModalMode('none')} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:bg-slate-100 transition cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
+            )}
 
             {/* VIEW 1: BOOK NOW FORM */}
             {modalMode === 'book_form' && (
@@ -118,14 +170,13 @@ export default function Book() {
               </div>
             )}
 
-            {/* VIEW 2: SUBMIT BOOKING DONE */}
+            {/* VIEW 2: SUBMIT BOOKING DONE (Auto-hides after 3 seconds, no X button or text) */}
             {modalMode === 'book_done' && (
               <div className="text-center py-6 space-y-3">
                 <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mx-auto text-white">
                   <CheckCircle className="w-6 h-6" />
                 </div>
                 <h3 className="text-base font-serif font-bold text-slate-800">Done Book!</h3>
-                <button onClick={() => setModalMode('none')} className="bg-slate-900 text-white font-bold text-[10px] px-6 py-2 rounded-lg cursor-pointer hover:bg-slate-800 transition">Close</button>
               </div>
             )}
 
@@ -142,7 +193,6 @@ export default function Book() {
                   
                   {/* Calendar Header Controls */}
                   <div className="flex justify-between items-center px-1">
-                    {/* Trigger button for small form popup */}
                     <button 
                       type="button"
                       onClick={() => setShowQuickSelect(!showQuickSelect)}
@@ -176,7 +226,6 @@ export default function Book() {
                   {showQuickSelect && (
                     <div className="absolute top-11 left-3 right-3 bg-white border border-slate-200 rounded-2xl p-3 shadow-xl z-20 space-y-3 animate-in fade-in zoom-in-95 duration-150">
                       <div className="grid grid-cols-2 gap-2">
-                        {/* Month Select Field */}
                         <div className="space-y-1 text-left">
                           <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Month</label>
                           <select 
@@ -190,7 +239,6 @@ export default function Book() {
                           </select>
                         </div>
 
-                        {/* Year Select Field */}
                         <div className="space-y-1 text-left">
                           <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Year</label>
                           <select 
@@ -205,7 +253,6 @@ export default function Book() {
                         </div>
                       </div>
 
-                      {/* Close popup action button */}
                       <button 
                         type="button" 
                         onClick={() => setShowQuickSelect(false)}
@@ -257,21 +304,28 @@ export default function Book() {
                   <input type="text" readOnly value={selectedDate} placeholder="Select date from calendar" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-center text-slate-800 focus:outline-none font-bold placeholder:font-normal placeholder:text-slate-400" />
                 </div>
 
-                <button disabled={!selectedDate} onClick={() => setModalMode('schedule_done')} className="w-full bg-[#0070c0] text-white text-[10px] font-bold tracking-widest py-3 rounded-xl disabled:opacity-40 shadow-md cursor-pointer hover:bg-blue-600 transition disabled:cursor-not-allowed">
-                  CONFIRM SCHEDULE
-                </button>
+                <div className="space-y-2">
+                  <button 
+                    disabled={!selectedDate} 
+                    onClick={() => {
+                      setScheduleStatus('pending');
+                      setModalMode('schedule_done'); // Switches to Schedule Done state which auto-hides after 3 seconds
+                    }} 
+                    className="w-full bg-[#0070c0] text-white text-[10px] font-bold tracking-widest py-3 rounded-xl disabled:opacity-40 shadow-md cursor-pointer hover:bg-blue-600 transition disabled:cursor-not-allowed"
+                  >
+                    CONFIRM SCHEDULE
+                  </button>
+                </div>
               </div>
             )}
 
-            {/* VIEW 4: SCHEDULING DONE */}
+            {/* VIEW 4: SCHEDULE SUBMISSION DONE (Auto-hides after 3 seconds, no X button or text) */}
             {modalMode === 'schedule_done' && (
               <div className="text-center py-6 space-y-3">
                 <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mx-auto text-white">
                   <CheckCircle className="w-6 h-6" />
                 </div>
-                <h3 className="text-base font-serif font-bold text-slate-800">Done Scheduling!</h3>
-                <p className="text-[10px] text-slate-500 font-medium">Locked Date: {selectedDate}</p>
-                <button onClick={() => setModalMode('none')} className="bg-slate-900 text-white font-bold text-[10px] px-6 py-2 rounded-lg cursor-pointer hover:bg-slate-800 transition">Close</button>
+                <h3 className="text-base font-serif font-bold text-slate-800">Schedule Submitted!</h3>
               </div>
             )}
 

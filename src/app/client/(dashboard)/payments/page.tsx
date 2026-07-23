@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { Smartphone, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 
 interface PaymentsProps {
-  onBack: () => void;
+  onBack?: () => void;
 }
 
-export default function Payments({ onBack }: PaymentsProps) {
+export default function Payments({ onBack = () => undefined }: PaymentsProps) {
   const [amount, setAmount] = useState('');
   const [refNum, setRefNum] = useState('');
   const [success, setSuccess] = useState(false);

@@ -51,15 +51,11 @@ export default function Work() {
       <div className="space-y-4">
         {filteredItems.map((item) => (
           <div key={item.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm group">
-            {/* Clickable Image container area */}
-            <div 
-              onClick={() => setActivePreviewItem(item)}
-              className="relative h-48 bg-slate-100 overflow-hidden cursor-zoom-in"
-            >
+            <div className="relative block w-full h-48 bg-slate-100 overflow-hidden text-left">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={item.image} 
-                alt={item.title} 
+              <img
+                src={item.image}
+                alt={item.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
               <span className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-sm text-white font-bold text-[9px] tracking-widest px-2 py-0.5 rounded">
@@ -68,9 +64,11 @@ export default function Work() {
             </div>
             <div className="p-4 flex justify-between items-center">
               <h4 className="text-xs font-bold text-slate-800">{item.title}</h4>
-              <button 
+              <button
+                type="button"
                 onClick={() => setActivePreviewItem(item)}
-                className="text-blue-500 hover:text-blue-600 transition p-1.5 hover:bg-slate-50 rounded-lg"
+                className="text-blue-500 hover:text-blue-600 transition p-1.5 hover:bg-slate-50 rounded-lg cursor-pointer"
+                aria-label={`Open preview for ${item.title}`}
               >
                 <Eye className="w-4 h-4" />
               </button>
@@ -81,7 +79,8 @@ export default function Work() {
 
       {/* Interactive Cinematic Lightbox Modal Sheet Container */}
       {activePreviewItem && (
-        <div 
+        <div
+          role="presentation"
           onClick={() => setActivePreviewItem(null)}
           className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-[100] flex flex-col justify-center items-center p-4 animate-in fade-in duration-200"
         >
@@ -96,15 +95,18 @@ export default function Work() {
             <button
               type="button"
               onClick={() => setActivePreviewItem(null)}
-              className="p-2.5 bg-white/10 hover:bg-white/20 active:scale-95 rounded-full transition text-white"
+              className="p-2.5 bg-white/15 hover:bg-white/25 active:scale-95 rounded-full transition text-white cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* High-Fidelity Preview Box Wrapper */}
-          <div 
-            onClick={(e) => e.stopPropagation()} 
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={activePreviewItem.title}
+            onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-4xl max-h-[75vh] rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-white/10 flex items-center justify-center animate-in zoom-in-95 duration-200"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
